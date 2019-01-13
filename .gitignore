@@ -10,3 +10,4 @@
 log/
 target/
 Data/
+cassandra-sink/
