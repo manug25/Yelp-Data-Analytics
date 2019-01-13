@@ -1,8 +1,9 @@
+package com.manu.yelp.stream
+
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.sql.{Row, SparkSession}
-import org.apache.spark.sql.types._
-
+import org.apache.spark.sql.types.StructType
 
 object StreamData {
 
@@ -72,21 +73,22 @@ object StreamData {
       .option("subscribe","tipsTopic")
       .load()*/
 
-    val query = businessStreamDF.writeStream
+    /*val query = businessStreamDF.writeStream
         .format("Console")
         .outputMode("append")
       .option("checkpointLocation","/media/manu/Coding/Coding/resources")
-        .start()
-   /* val query = businessStreamDF.writeStream
+        .start()*/
+
+    val query = businessStreamDF.writeStream
       .foreach(new HBaseForeachWriter[Row] {
         override val tableName: String = "businessData"
         override val hbaseConfResources: Seq[String] = Seq("core-site.xml", "hbase-site.xml")
 
         override def toPut(record: Row): Put = {
           val key = businessStreamDF(colName = "business_id").toString()
-          val columnFamilyName: String = "id"
+          val columnFamilyName: String = "data"
           val columnName: String = businessStreamDF.col("business_id").toString()
-          val columnValue = businessStreamDF.toString()
+          val columnValue = businessStreamDF("business_id").toString()
 
           val p = new Put(Bytes.toBytes(key))
           p.addColumn(Bytes.toBytes(columnFamilyName),
@@ -95,15 +97,14 @@ object StreamData {
           p
         }
       })
-      .outputMode("apend")
-      .start()*/
+      .outputMode("append")
+      .start()
 
     query.awaitTermination()
 
-
   }
 
-  def getSchema(schemaName: String) = {
+  /*def getSchema(schemaName: String) = {
 
     schemaName match {
       case "businessSchema" => val businessSchema = StructType(Array(
@@ -118,5 +119,5 @@ object StreamData {
         StructField("review_count", IntegerType, true)
       ))
     }
-  }
+  }*/
 }

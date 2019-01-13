@@ -1,3 +1,5 @@
+package com.manu.yelp.stream
+
 import java.net.URL
 import java.util.Properties
 

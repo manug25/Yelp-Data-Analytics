@@ -1,6 +1,7 @@
-
+package com.manu.yelp.stream
 
 import java.util.concurrent.ExecutorService
+
 import org.apache.hadoop.hbase.client.{Connection, ConnectionFactory, Put, Table}
 import org.apache.hadoop.hbase.security.User
 import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
