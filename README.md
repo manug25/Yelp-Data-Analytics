@@ -15,9 +15,13 @@ e.g
 * Go to streaming module
 * mvn clean install
 * Run Stream app using spark-submit
+
 ```bin/spark-submit --class <class-name> --master <yarn-cluster> <jar file path>```
+
 e.g
+
 ```bin/spark-submit --class StreamData --master local[4]/media/manu/Coding/Coding/Yelp-Image-Analytics/streaming/target/streaming-1.0-SNAPSHOT.jar```
+
 # Step5: Start Producer application
 * Go to kafka module
 * Provide Kafka param in file kafkaConfig.properties present in resource directory

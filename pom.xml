@@ -11,6 +11,7 @@
     <modules>
         <module>kafka</module>
         <module>streaming</module>
+        <module>cassandra-sink</module>
     </modules>
 
     <dependencies>

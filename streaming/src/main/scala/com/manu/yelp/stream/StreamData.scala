@@ -4,6 +4,8 @@ import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.functions._
+
 
 object StreamData {
 
@@ -36,7 +38,7 @@ object StreamData {
       .option("startingOffsets", "earliest")
       .option("max.poll.records", 10)
       .load()
-      //.select(from_json(col("value").cast("string"), businessSchema))
+      .select(from_json('business_id, businessSchema) as 'businessId)
 
     /*val userStreamDF = spark
       .readStream
