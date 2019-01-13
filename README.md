@@ -23,5 +23,15 @@ e.g
 * Provide Kafka param in file kafkaConfig.properties present in resource directory
 * mvn clean install
 * Run using spark-submit
- **Producer app using spark-submit
-* Or Run using producer.sh execute ./producer.sh
+     
+     *Producer app using spark-submit
+     
+     ```spark-submit --class Producer <jar-file-path>```
+     
+     *Producing data using producer.sh script 
+     
+     ```./producer.sh <file-path> <kafka-broker-list> <topic-name>```
+     
+     e.g
+     
+     ```./producer.sh /data/json/user.json localhost:9092 userTopic```
