@@ -8,7 +8,7 @@ object StreamData {
 
   def main(args: Array[String]): Unit = {
 
-    val spark = SparkSession.builder().appName("Yelp Data Stream").master("local[2]").getOrCreate()
+    val spark = SparkSession.builder().appName("Yelp Data Stream").getOrCreate()
 
     /*if(args.length < 4) {
       System.err.println("Usage: KafkaProducer <BrokerList> <topic> <messgaePerSec> <wordsPermessage>")
@@ -17,17 +17,8 @@ object StreamData {
 
     StreamConfigProvider.setConfig("/streamConfig.properties")
 
-    val businessSchema = StructType(Array(
-      StructField("business_id",StringType, true),
-      StructField("name",StringType,true),
-      StructField("neighborhood", StringType, true),
-      StructField("address", StringType, true),
-      StructField("city", StringType, true),
-      StructField("state", StringType, true),
-      StructField("postal code", StringType,true)))
-
     import spark.implicits._
-    val schema = new StructType()
+    val businessSchema = new StructType()
       .add($"business_id".string)
       .add($"name".string)
       .add($"neighborhood".string)
@@ -44,7 +35,7 @@ object StreamData {
       .option("startingOffsets", "earliest")
       .option("max.poll.records", 10)
       .load()
-      //.select(from_json(col("value").cast("string"), schema))
+      //.select(from_json(col("value").cast("string"), businessSchema))
 
     /*val userStreamDF = spark
       .readStream

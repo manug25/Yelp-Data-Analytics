@@ -4,8 +4,7 @@ import java.util.concurrent.Future
 import java.util.{HashMap, Properties}
 
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
-import org.apache.spark.sql.DataFrame
-
+import org.apache.log4j._
 import scala.io.Source
 
 object Producer {
