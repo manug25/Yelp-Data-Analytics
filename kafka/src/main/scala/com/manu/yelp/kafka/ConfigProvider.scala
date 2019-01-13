@@ -7,7 +7,7 @@ import scala.io.Source
 
 object ConfigProvider {
 
-  var bootstrapServers: Array[String] = _
+  var bootstrapServers: String = _
   var topicList: Array[String] = _
   var acks: String = _
   var numRetries: Int = _
@@ -16,6 +16,7 @@ object ConfigProvider {
   var buffer_memory: Long = _
   var key_serializer: String = _
   var value_serializer: String = _
+  var dataPath: String = _
 
   private var props: Properties = _
 
@@ -30,7 +31,7 @@ object ConfigProvider {
       System.exit(1)
     }
 
-    bootstrapServers = props.getProperty("bootstrapServers").split(",")
+    bootstrapServers = props.getProperty("bootstrapServers")
     topicList = props.getProperty("topicList").split(",")
     acks = props.getProperty("acks")
     numRetries = props.getProperty("retries").toInt
@@ -39,6 +40,7 @@ object ConfigProvider {
     buffer_memory = props.getProperty("buffer_memory").toLong
     key_serializer = props.getProperty("key_serializer")
     value_serializer = props.getProperty("value_serializer")
+    dataPath = props.getProperty("data_dir")
 
   }
 }

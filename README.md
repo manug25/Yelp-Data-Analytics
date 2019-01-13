@@ -20,6 +20,7 @@ e.g
 ```bin/spark-submit --class StreamData --master local[4]/media/manu/Coding/Coding/Yelp-Image-Analytics/streaming/target/streaming-1.0-SNAPSHOT.jar```
 # Step5: Start Producer application
 * Go to kafka module
+* Provide Kafka param in file kafkaConfig.properties present in resource directory
 * mvn clean install
 * Run using spark-submit
  **Producer app using spark-submit

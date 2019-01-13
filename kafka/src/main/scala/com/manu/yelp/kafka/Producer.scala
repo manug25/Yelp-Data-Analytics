@@ -4,7 +4,7 @@ import java.util.concurrent.Future
 import java.util.{HashMap, Properties}
 
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
-import org.apache.log4j._
+
 import scala.io.Source
 
 object Producer {
@@ -13,21 +13,20 @@ object Producer {
 
   def main(args: Array[String]): Unit = {
 
-    /*if(args.length < 4) {
-      System.err.println("Usage: KafkaProducer <BrokerList> <topic> <messgaePerSec> <wordsPermessage>")
+    if(args.length < 1) {
+      println("Number of args is : " + args.length)
+      System.err.println("Usage: spark-submit --class <class-Name> <jar-path>")
       System.exit(1)
-    }*/
+    }
 
-    Console.println("Started Producer")
-    println("Producer started........")
+    println("Started Producer")
+
     ConfigProvider.setConfig("/kafkaConfig.properties")
 
     val props = new Properties()
 
-    println("Setting Props")
-
-    props.put("bootstrap.servers", "localhost:9092")
-    props.put("acks", "all")
+    props.put("bootstrap.servers", ConfigProvider.bootstrapServers)
+    props.put("acks", ConfigProvider.acks)
     //props.put("retries", 1)
     //props.put("batch.size", 10)
     //props.put("linger.ms", 1)
@@ -37,23 +36,17 @@ object Producer {
 
     producer = new KafkaProducer[String,String](props)
 
-//Reading json files from Data folder
-
-    //val businessDF = Source.fromFile("")
-    //val userDF = DataLoader.getData("Data/json/yelp_academic_dataset_user.json")
-
+//Sending business data to topic businessTopic
     while(true){
       try{
-
-        for(line <- Source.fromFile("Data/json/business.json").getLines()){
-          produce("topicName",line)
+        for(line <- Source.fromFile(ConfigProvider.dataPath+"/business.json").getLines()){
+          println("Now sending records" + line + "/n")
+          produce("businessTopic",line)
         }
         Thread.sleep(1000)
       } catch {
         case e:Exception => e.printStackTrace()
-        producer.close()
       }
-      println("Done Producing message")
     }
   }
 
