@@ -1,19 +1,19 @@
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.sql.{Row, SparkSession}
-import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.types._
 
 
 object StreamData {
 
   def main(args: Array[String]): Unit = {
 
-    val spark = SparkSession.builder().appName("Yelp Data Stream").getOrCreate()
+    val spark = SparkSession.builder().appName("Yelp Data Stream").master("local[2]").getOrCreate()
 
-    if(args.length < 4) {
+    /*if(args.length < 4) {
       System.err.println("Usage: KafkaProducer <BrokerList> <topic> <messgaePerSec> <wordsPermessage>")
       System.exit(1)
-    }
+    }*/
 
     StreamConfigProvider.setConfig("/streamConfig.properties")
 
@@ -39,15 +39,14 @@ object StreamData {
     val businessStreamDF = spark
       .readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "getKafkaHost")
-      .option("subscribe","businessTopic")
+      .option("kafka.bootstrap.servers", "localhost:9092,localhost:9093")   // comma separated list of broker:host
+      .option("subscribe", "businessTopic")    // comma separated list of topics
       .option("startingOffsets", "earliest")
       .option("max.poll.records", 10)
-      .option("failOnDataLoss", false)
       .load()
       //.select(from_json(col("value").cast("string"), schema))
 
-    val userStreamDF = spark
+    /*val userStreamDF = spark
       .readStream
       .format("kafka")
       .option("kafka.bootstrap.servers", "getKafkaHost")
@@ -80,9 +79,14 @@ object StreamData {
       .format("kafka")
       .option("kafka.bootstrap.servers", "getKafkaHost")
       .option("subscribe","tipsTopic")
-      .load()
+      .load()*/
 
     val query = businessStreamDF.writeStream
+        .format("Console")
+        .outputMode("append")
+      .option("checkpointLocation","/media/manu/Coding/Coding/resources")
+        .start()
+   /* val query = businessStreamDF.writeStream
       .foreach(new HBaseForeachWriter[Row] {
         override val tableName: String = "businessData"
         override val hbaseConfResources: Seq[String] = Seq("core-site.xml", "hbase-site.xml")
@@ -91,31 +95,37 @@ object StreamData {
           val key = businessStreamDF(colName = "business_id").toString()
           val columnFamilyName: String = "id"
           val columnName: String = businessStreamDF.col("business_id").toString()
-          val columnValue = ""
+          val columnValue = businessStreamDF.toString()
 
           val p = new Put(Bytes.toBytes(key))
           p.addColumn(Bytes.toBytes(columnFamilyName),
             Bytes.toBytes(columnName),
             Bytes.toBytes(columnValue))
-
           p
         }
       })
+      .outputMode("apend")
+      .start()*/
+
+    query.awaitTermination()
 
 
   }
 
-  def getS() = {
+  def getSchema(schemaName: String) = {
 
-    val businessSchema = StructType(Array(
-      StructField("business_id",StringType, true),
-      StructField("name",StringType,true),
-      StructField("neighborhood", StringType, true),
-      StructField("address", StringType, true),
-      StructField("city", StringType, true),
-      StructField("state", StringType, true),
-      StructField("postal code", StringType,true)
-    ))
-
+    schemaName match {
+      case "businessSchema" => val businessSchema = StructType(Array(
+        StructField("business_id",StringType, true),
+        StructField("name",StringType,true),
+        StructField("neighborhood", StringType, true),
+        StructField("address", StringType, true),
+        StructField("city", StringType, true),
+        StructField("state", StringType, true),
+        StructField("postal code", StringType,true),
+        StructField("stars", FloatType, true),
+        StructField("review_count", IntegerType, true)
+      ))
+    }
   }
 }

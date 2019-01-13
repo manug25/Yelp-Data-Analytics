@@ -7,11 +7,11 @@
 #$3: topic name
 #
 #
-export PATH=$PATH:kafka-broker/bin directory
+#export PATH=$PATH:kafka-broker/bin directory
 FILES=$1
 for f in $FILES
 do
     echo "pushing $f file"
     cat $f | kafka-console-producer.sh --broker-list $2  --topic $3
-    sleep 60
+    sleep 5
 done
