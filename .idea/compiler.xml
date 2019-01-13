@@ -8,8 +8,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="kafka" />
         <module name="streaming" />
-        <module name="utils" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="utils" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
