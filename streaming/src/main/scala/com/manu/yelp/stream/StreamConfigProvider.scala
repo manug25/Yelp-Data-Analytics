@@ -19,7 +19,7 @@ object StreamConfigProvider {
 
   private var props: Properties = _
 
-  def setConfig(path: String) = {
+  def setConfig(path: String): Unit = {
     val configFile: URL = getClass.getResource(path)
 
     if(!configFile.equals(null)) {

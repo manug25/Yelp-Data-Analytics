@@ -1,9 +1,11 @@
 package com.manu.yelp.kafka
 
+import java.io.FileNotFoundException
 import java.util.concurrent.Future
 import java.util.{HashMap, Properties}
 
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
+import org.apache.spark.sql.SparkSession
 
 import scala.io.Source
 
@@ -13,11 +15,12 @@ object Producer {
 
   def main(args: Array[String]): Unit = {
 
-    if(args.length < 1) {
+    /*if(args.length < 1) {
       println("Number of args is : " + args.length)
       System.err.println("Usage: spark-submit --class <class-Name> <jar-path>")
       System.exit(1)
-    }
+    }*/
+    val spark = SparkSession.builder().appName("Yelp Data Kafka Producer").master("local[*]").getOrCreate()
 
     println("Started Producer")
 
@@ -28,7 +31,7 @@ object Producer {
     props.put("bootstrap.servers", ConfigProvider.bootstrapServers)
     props.put("acks", ConfigProvider.acks)
     //props.put("retries", 1)
-    //props.put("batch.size", 10)
+    //props.put("batch.size", ConfigProvider.batchSize)
     //props.put("linger.ms", 1)
     //props.put("buffer.memory", 33554432)
     props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
@@ -41,10 +44,11 @@ object Producer {
       try{
         for(line <- Source.fromFile(ConfigProvider.dataPath+"/business.json").getLines()){
           println("Now sending records" + line + "/n")
-          produce("businessTopic",line)
+          produce("yelp-business",line)
         }
         Thread.sleep(1000)
       } catch {
+        case f: FileNotFoundException => println("No files available. Waiting for new records")
         case e:Exception => e.printStackTrace()
       }
     }

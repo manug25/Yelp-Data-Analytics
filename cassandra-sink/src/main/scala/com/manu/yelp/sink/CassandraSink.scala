@@ -13,12 +13,12 @@ object CassandraSink {
 
   def main(args: Array[String]): Unit = {
 
-    val host = "localhost:"
-    val clusterName = ""
-    val keySpace = "<keySpace>"
-    val tableName = "<tableName>"
+    val host = "127.0.0.1:9042"
+    val clusterName = "Test Cluster"
+    val keySpace = "yelp_data"
+    val tableName = "business"
 
-    val spark = SparkSession.builder().appName("KafkaCassandraSink").master("local[4]").getOrCreate()
+    val spark = SparkSession.builder().appName("KafkaCassandraSink").master("local[*]").getOrCreate()
 
     spark.setCassandraConf(clusterName,CassandraConnectorConf.ConnectionHostParam.option(host))
 
