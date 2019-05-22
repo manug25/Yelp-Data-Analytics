@@ -40,18 +40,21 @@ object Producer {
     producer = new KafkaProducer[String,String](props)
 
 //Sending business data to topic businessTopic
-    while(true){
-      try{
+    try {
+      while(true){
+
         for(line <- Source.fromFile(ConfigProvider.dataPath+"/business.json").getLines()){
-          println("Now sending records" + line + "/n")
+          println("Now sending business records " + line + "/n")
           produce("yelp-business",line)
+          Thread.sleep(1000)
         }
-        Thread.sleep(1000)
-      } catch {
-        case f: FileNotFoundException => println("No files available. Waiting for new records")
-        case e:Exception => e.printStackTrace()
+
       }
-    }
+      } catch {
+          case f: FileNotFoundException => println("No files available. Waiting for new records")
+          case e:Exception => e.printStackTrace()
+        }
+
   }
 
   def produce(topic:String,data:String): Future[RecordMetadata] ={

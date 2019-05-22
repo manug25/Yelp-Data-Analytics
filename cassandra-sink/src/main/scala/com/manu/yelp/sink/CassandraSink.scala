@@ -15,7 +15,7 @@ object CassandraSink {
 
     val host = "127.0.0.1:9042"
     val clusterName = "Test Cluster"
-    val keySpace = "yelp_data"
+    val keySpace = "yelpdata"
     val tableName = "business"
 
     val spark = SparkSession.builder().appName("KafkaCassandraSink").master("local[*]").getOrCreate()
